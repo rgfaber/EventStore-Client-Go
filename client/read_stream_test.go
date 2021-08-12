@@ -62,7 +62,15 @@ func TestReadStreamEventsForwardsFromZeroPosition(t *testing.T) {
 
 	streamId := "dataset20M-1800"
 
-	events, err := client.ReadStreamEvents(context, direction.Forwards, streamId, stream_position.Start{}, numberOfEvents, true)
+	stream, err := client.ReadStreamEvents(context, direction.Forwards, streamId, stream_position.Start{}, numberOfEvents, true)
+
+	if err != nil {
+		t.Fatalf("Unexpected failure %+v", err)
+	}
+
+	defer stream.Close()
+
+	events, err := collectStreamEvents(stream)
 
 	if err != nil {
 		t.Fatalf("Unexpected failure %+v", err)
@@ -105,7 +113,15 @@ func TestReadStreamEventsBackwardsFromEndPosition(t *testing.T) {
 
 	streamId := "dataset20M-1800"
 
-	events, err := client.ReadStreamEvents(context, direction.Backwards, streamId, stream_position.End{}, numberOfEvents, true)
+	stream, err := client.ReadStreamEvents(context, direction.Backwards, streamId, stream_position.End{}, numberOfEvents, true)
+
+	if err != nil {
+		t.Fatalf("Unexpected failure %+v", err)
+	}
+
+	defer stream.Close()
+
+	events, err := collectStreamEvents(stream)
 
 	if err != nil {
 		t.Fatalf("Unexpected failure %+v", err)
